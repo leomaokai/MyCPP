@@ -1,0 +1,138 @@
+重点：
+安装软件的方法：
+1. rpm工具安装二进制的rpm包
+rpm -ivh  xxx.rpm
+rpm -e xxx
+rpm -q xxx
+rpm -ql xxx
+rpm -qa		查看当前系统已经安装的所有软件包
+rpm -aq|grep xxx
+rpm -Uvh xxx.rpm
+rpm -Fvh  xxx.rpm
+
+--nodeps		忽略依赖关系
+注意：
+安装的时候必须解决依赖关系再安装；卸载软件的时候可以忽略依赖关系卸载
+
+遇到问题：
+遇到依赖关系；需要手动一一解决.
+
+2.yum工具安装二进制的rpm包
+优点：可以自动解决依赖关系
+缺点：安装软件包之前需要配置yum源
+
+1）本地yum源
+1. 操作系统本地需要有一个yum仓库（软件包+repodata）
+mount -o /dev/sr0  /mnt	手动挂载，重启失效
+2. 告诉yum工具去哪个仓库里找（配置yum源）
+cd /etc/yum.repos.d
+vim demo.repo
+[local]
+name=local yum
+baseurl=file:///mnt
+enabled=1
+gpgcheck=0
+
+3. 掌握yum工具常用命令
+yum clean all
+yum makecache
+yum install xxx -y
+yum remove xxx -y
+yum update xxx
+yum list |grep xxx
+yum list installed
+
+yum grouplist
+yum groupinstall "包组名" -y
+yum groupremove "包组名"
+
+
+2）网络yum源
+
+cd /etc/yum.repos.d
+vim demo.repo
+[local]
+name=local yum
+baseurl=file:///mnt
+enabled=1
+gpgcheck=0
+
+[aliyun]
+name=aliyun
+baseurl=https://mirrors.aliyun.com/centos/6/os/x86_64/
+enabled=0
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
+
+[epel]
+name=epel
+baseurl=https://mirrors.aliyun.com/epel/6/x86_64/
+enabled=0
+gpgcheck=0
+
+
+xlockmore  第三方  依赖几个软件包（本地仓库有一部分，另外一部分本地仓库里没有）
+# yum localinstall esound-libs-0.2.41-3.1.el6.x86_64.rpm  该软件本地仓库里没有，需要提前安装
+# yum localinstall xlockmore-5.31-2.el6.x86_64.rpm
+# yum groupinstall "Desktop"
+将系统运行到图形界面  init 5
+# xlock
+
+自建yum仓库：
+
+1.自己仓库就是一个本地仓库
+2.仓库里要有软件包和依赖关系repodata
+
+步骤：
+1. 创建一个目录来保存所有的软件包
+mkdir /soft
+cp xxx /soft
+
+2.扫描该软件目录让其生成依赖关系
+createrepo /soft
+
+3. 配置本地yum源
+cd /etc/yum.repos.d
+[myself]
+name=xxx
+baseurl=file:///soft
+enabled=1
+gpgcheck=0
+#priority=10   可以指定优先级
+
+总结：
+1. 本地yum源
+2. 自建yum源
+
+3.网络源
+环境搭建配置
+
+vim /etc/yum.conf		yum的配置I文件
+
+[main]
+cachedir=/var/cache/yum/$basearch/$releasever
+keepcache=0	0表示不保存缓存软件包；1表示保存
+debuglevel=2
+logfile=/var/log/yum.log
+exactarch=1
+obsoletes=1
+gpgcheck=1
+plugins=1
+installonly_limit=5
+bugtracker_url=http://bugs.centos.org/set_project.php?project_id=16&ref=http://bugs.centos.org/bug_report_page.php?category=yum
+distroverpkg=centos-release
+	
+
+4. 配置好多yum源
+epel  aliyun local
+
+建议使用哪个打开哪个，enabled=0|1
+默认安装最新版本的软件包
+#priority=10   可以指定优先级
+
+
+
+
+
+
+

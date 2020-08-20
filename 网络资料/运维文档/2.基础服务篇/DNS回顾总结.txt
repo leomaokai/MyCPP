@@ -1,0 +1,307 @@
+DNS服务作用：
+域名——>IP     正向解析	A记录
+IP——>域名	反向解析   PTR记录
+
+DNS域名管理系统结构：
+	.根域
+-----------------------------------
+    顶级域名  一级域名   .com.	 .gov.    .edu.   .org.   www.centos.org   www.kernel.org  www.mycat.io
+------------------------------------
+    二级域名	qq.com.	baidu.com.
+------------------------------------
+   三级域名
+
+    www.taobao.com	*.taobao.com
+    bbs.taobao.com
+    www.abc.com.cn
+  
+DNS的工作原理（解析原理）：
+
+client——>客户端的缓存——>客户端的hosts——>客户端配置的第一台DNS服务器——>DNS服务器找自己的缓存——>DNS服务器找自己的A记录——>DNS服务器依次向根域要...
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+web服务：
+   1. 默认		/var/www/html/
+   2. 更改		修改配置文件 /etc/httpd/conf/httpd.conf
+
+
+		DocumentRoot	/data
+		<Dirctory "/data/">
+			选项设置
+
+		</Dirctory>
+
+思考： 1台服务器 （10.1.1.1）如何 搭建2个网站？
+方案1：
+ /data/web1/index.html		www.web1.com
+ /data/web2/index.html		www.web2.com
+
+
+客户： 
+http://10.1.1.1/web1
+http://10.1.1.1/web2
+     
+方案2：搭建虚拟主机
+1）基于IP的虚拟主机
+核心思路：
+有多个IP（2个）——>配置多网卡，或者配置子接口
+配置虚拟主机
+
+<VirtualHost 10.1.1.2:80>		//定义IP
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot /data/web1	//指定网站目录
+    #ServerName dummy-host.example.com
+    ErrorLog logs/web1-error_log
+    CustomLog logs/web1-access_log common
+</VirtualHost>
+<VirtualHost 192.168.159.135:80>	//定义IP
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot /data/web2	//指定网站目录
+    #ServerName dummy-host.example.com
+    ErrorLog logs/web2-error_log
+    CustomLog logs/web2-access_log common
+</VirtualHost>
+
+2）基于端口的虚拟主机
+核心思路：
+有多个端口	默认端口80   httpd.conf	Listen 80
+配置虚拟主机
+
+Listen 80
+Listen 10086
+<VirtualHost *:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot /data/web1
+    #ServerName dummy-host.example.com
+    ErrorLog logs/web1-error_log
+    CustomLog logs/web1-access_log common
+</VirtualHost>
+<VirtualHost *:10086>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot /data/web2
+    #ServerName dummy-host.example.com
+    ErrorLog logs/web2-error_log
+    CustomLog logs/web2-access_log common
+</VirtualHost>
+
+[root@web conf]# service httpd restart
+Stopping httpd:                                            [  OK  ]
+Starting httpd:                                            [  OK  ]
+[root@web conf]# 80 10086^C
+[root@web conf]# netstat -nltp|grep 80
+tcp        0      0 :::80                       :::*                        LISTEN      3834/httpd          
+[root@web conf]# netstat -nltp|grep 10086
+tcp        0      0 :::10086                    :::*                        LISTEN      3834/httpd   
+
+3）基于域名的虚拟主机
+   
+
+分析：
+客户端：
+www.abc.io	this is www.abc.io test page
+bbs.momowu.cc	this is bbs.momowu.cc test page
+
+搭建DNS服务：
+1）管理2个域
+abc.io	www
+momowu.cc	bbs
+
+2） DNS服务器的配置文件里A记录指向web-server
+
+abc.io
+www	A	10.1.1.2
+
+momowu.cc
+
+bbs	A	10.1.1.2
+
+
+搭建web服务：
+基于域名的虚拟主机
+
+ServerName   www.abc.io
+DocumentRoot	/www/abc
+
+
+ServerName   bbs.momowu.cc
+DocumentRoot	/www/momowu
+
+
+
+详细步骤：
+1. 搭建DNS服务
+1）清理环境
+2）修改配置文件
+vim /etc/named.conf
+options {
+        listen-on port 53 { 127.0.0.1;any; };
+....
+       allow-query     { localhost;any; };
+....
+
+vim /etc/named.rfc1912.zones
+增加如下内容：
+zone "abc.io" IN {
+        type master;
+        file "abc.io.zone";
+        allow-update { none; };
+};
+zone "momowu.cc" IN {
+        type master;
+        file "momowu.cc.zone";
+        allow-update { none; };
+};
+
+3）创建区域文件
+[root@dns-server named]# cp named.localhost abc.io.zone -p
+[root@dns-server named]# cp named.localhost momowu.cc.zone -p
+
+修改区域文件内容：
+[root@dns-server named]# cat abc.io.zone
+$TTL 1D
+@	IN SOA	@ rname.invalid. (
+					0	; serial
+					1D	; refresh
+					1H	; retry
+					1W	; expire
+					3H )	; minimum
+	NS	dns.abc.io.
+dns	A	10.1.1.1
+www	A	10.1.1.2
+
+
+[root@dns-server named]# cat momowu.cc.zone 
+$TTL 1D
+@	IN SOA	@ rname.invalid. (
+					0	; serial
+					1D	; refresh
+					1H	; retry
+					1W	; expire
+					3H )	; minimum
+	NS	dns.momowu.cc.
+dns	A	10.1.1.1
+bbs	A	10.1.1.2
+
+3）启动服务
+4）客户端测试验证：
+[root@client ~]# echo nameserver 10.1.1.1 > /etc/resolv.conf 
+[root@client ~]# cat /etc/resolv.conf 
+nameserver 10.1.1.1
+[root@client ~]# nslookup www.abc.io
+Server:		10.1.1.1
+Address:	10.1.1.1#53
+
+Name:	www.abc.io
+Address: 10.1.1.2
+
+[root@client ~]# nslookup bbs.momowu.cc
+Server:		10.1.1.1
+Address:	10.1.1.1#53
+
+Name:	bbs.momowu.cc
+Address: 10.1.1.2
+
+
+搭建web服务：
+1. 创建相应的数据目录
+[root@web ~]# mkdir /www/{abc,momowu} -p
+[root@web ~]# echo "this is www.abc.io test page" > /www/abc/index.html
+[root@web ~]# echo "this is bbs.momowu.cc test page" > /www/momowu/index.html
+
+2. 发布虚拟主机
+
+错误：
+[root@web conf]# service httpd restart
+Stopping httpd:                                            [  OK  ]
+Starting httpd: [Tue Nov 13 17:17:18 2018] [warn] _default_ VirtualHost overlap on port 80, the first has precedence
+                                                           [  OK  ]
+原因：没有打开NameVirtualHost *:80选项
+
+	
+
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot /www/abc
+    ServerName www.abc.io
+    ErrorLog logs/abc.io-error_log
+    CustomLog logs/abc.io-access_log common
+</VirtualHost>
+<VirtualHost *:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot /www/momowu
+    ServerName bbs.momowu.cc
+    ErrorLog logs/bbs-error_log
+    CustomLog logs/bbs-access_log common
+</VirtualHost>
+
+
+
+3. 启动服务
+
+
+
+客户端测试验证：
+[root@client ~]# elinks http://www.abc.io
+[root@client ~]# elinks http://bbs.momowu.cc
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+补充：软硬连接
+硬连接：
+1. 互为硬连接的两个文件的inode号相同
+2. 一个文件改变另一个文件跟着改变
+3. 删除一个硬连接文件不影响另一个硬连接文件
+4. Linux下只能对文件创建硬连接文件（目录不允许）
+5. 不能跨文件系统创建硬连接文件
+
+创建硬连接命令：
+ln 源文件	硬连接文件
+eg:给file1文件创建硬连接文件test1
+ln file1  test1
+
+软连接：
+1. 互为软连接的两个文件inode号不同
+2. 删除源文件会影响软链接文件
+3.可以跨文件系统创建软连接文件
+4. 文件和目录都可以创建软连接
+注意：
+1）创建软连接，最好使用绝对路径
+2）删除软连接文件，最好使用unlink命令
+
+
+创建软连接的命令：
+ln 源文件  硬连接文件
+eg:给file1创建软链接文件
+ln -s file1 test1
+ln -s /tmp/dir1 /root/aaa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
