@@ -3,20 +3,4 @@
 
 https://blog.csdn.net/code_tree
 
-参考资料
-
-C++ Primer Plus
-
-C Primer Plus
-
-C++ Primer
-
-Effective C++
-
-STL源码剖析
-
-C和C++程序员面试秘笈
-
-[C++那些事](https://github.com/Light-City/CPlusPlusThings)
-
-[面向校招系列C++高级课程](https://ke.qq.com/course/422098)
+参考资料各种学习资源
