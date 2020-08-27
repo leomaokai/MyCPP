@@ -6,21 +6,22 @@ service mysql stop
 
 # 库管理
 
-创建数据库									create database <数据库名>
+创建数据库				  create database <数据库名>
 
-显示所有的数据库						show databases （注意：最后有个s）
+显示所有的数据库			show databases （注意：最后有个s）
 
-删除数据库									drop database <数据库名>
+删除数据库				  drop database <数据库名>
 
-连接数据库									use <数据库名>
+连接数据库				  use <数据库名>
 
-查看当前使用的数据库					select database();
+查看当前使用的数据库		   select database();
 
-当前数据库包含的表信息				show tables; 
+当前数据库包含的表信息		  show tables; 
 
-查看数据库的字符集						show create database 数据库名
+查看数据库的字符集		    show create database 数据库名
 
-更改数据库字符集						alter database 数据库名 character set gbk
+更改数据库字符集			 alter database 数据库名 character set gbk
+
 
 # 表管理
 
@@ -64,7 +65,7 @@ service mysql stop
 
 去除重复记录				select	distinct  ....
 
-条件查询						select  *  from  表名  where  条件表达式		
+**条件查询**						select  *  from  表名  where  条件表达式		
 
 * 条件表达式    比较运算符   between and     like  		
 
@@ -72,7 +73,7 @@ service mysql stop
 
 * 逻辑   		与 AND     或  OR     非  NOT
 
-聚合查询       通过包含一个聚合函数(Sum 或 Avg)来汇总来自多个行的信息
+**聚合查询**       通过包含一个聚合函数(Sum 或 Avg)来汇总来自多个行的信息
 
 * avg()求平均值	max()求最大值	min()最小值    count()求记录数    sum()求和
 * select  count(*)  from  表名              select  count(字段)  from  表名
@@ -81,20 +82,20 @@ service mysql stop
 * select  max(字段)   from   表名
 * select   avg(字段)   from   表名
 
-分页查询         limit  
+**分页查询**         limit  
 
 * select  *   from  表名  **limit**  start,pagsize
 
 *  select  *  from  表名  limit  (pageno-1)*pagesize,pagesize
 
-查询排序       order  by  
+**查询排序**       order  by  
 
 * 降序          select  *  from   表名   **order**  **by**  字段  **desc**
 * 升序          select  *  from   表名   **order**  **by**  字段  **asc**
 * 多列排序    select *  from   表名   **order**  **by**   字段1  **desc**, 字段2  **asc**
   * 先按照第一排序条件进行,在第一排序相同的情况按第二排序条件进行
 
-分组查询     group   by
+**分组查询**     group   by
 
 * select   字段1,**count(*)**   from    表名   **group**   **by**  字段1
 * 分组查询需要配合聚合查询
