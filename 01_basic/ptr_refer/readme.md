@@ -134,6 +134,13 @@ int main()
 
 数组指针是指针,指向一个数组
 
+```cpp
+int array[5]={};//sizeof(array)=20
+int *p1=array;//sizeof(p1)=4
+int (*p2)[5]=&array;//sizeof(p2)=4
+int (&q)[5]=array;//sizeof(q)=20
+```
+
 # 函数指针与指针函数
 
 指针函数是返回指针类型的函数
