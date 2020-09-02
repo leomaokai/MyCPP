@@ -68,6 +68,7 @@ int main()
 	char buffer[BUFFER_SIZE];
 	while(1)
 	{
+         poll(fds,2,-1);
 		for(int i=0;i<2;++i)
 		{
 			if(fds[i].revents=POLLIN)
