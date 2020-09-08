@@ -1,6 +1,8 @@
 vector与数组相似,可称为单端数组
 
-但是数组是静态空间，而vector可以动态扩展
+但是数组是静态空间，而vector可以2倍动态扩展
+
+对容器进行连续的插入或者删除操作,一定要更新迭代器,否则第一次insert或者erase完成后迭代器会失效
 
 构造函数
 
@@ -27,7 +29,7 @@ empty();//判断容器是否为空
 capacity();//容器的容量
 size();//返回容器中元素的个数
 
-resize(int num);
+resize(int num);//扩容
 //重新指定容器长度为num,若容器变长,则以默认值填充新位置
 //如果容器变短,则末尾超出容器长度的元素被删除
 resize(int num,elem);
@@ -40,7 +42,7 @@ resize(int num,elem);
 ```cpp
 push_back(ele);//尾部插入元素ele
 pop_back();//删除最后一个元素
-insert(const_iterator pos,ele);//迭代器指向位置pos插入元素ele
+insert(const_iterator pos,ele);//迭代器指向位置pos插入元素ele,返回新的迭代器
 insert(const_iterator pos,int n,ele);//迭代器指向位置插入n个元素ele
 erase(const_iterator pos);//删除迭代器指向的元素
 erase(const_iterator start,const_iterator end);//删除区间中的元素
