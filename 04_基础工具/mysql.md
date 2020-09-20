@@ -43,7 +43,7 @@ service mysql stop
 
 # 表数据管理
 
-插入数据							insert into <表名>  [( <字段名>]  values  ( 值 )
+插入数据							insert into <表名>  [( <字段名>)]  values  ( 值 )
 
 查询表中的数据				select <字段，字段，...> from < 表名 > where < 表达式 >
 
@@ -296,7 +296,74 @@ select rpad('hello','10','*');#rpad用指定的字符实现右填充
 select replace('hello world','world','mysql');#replace实现替换
 ```
 
+```mysql
+#数学函数
+select round(3.1415);#3,round四舍五入函数
+select round(3.1415,2);#3.14,保留两位小数
+select ceil(3.14);#4,ceil向上取整,返回大于等于该参数的最小整数
+select floor(3.14);#3,floor向下取整,返回小于等于该参数的最大整数
+select truncate(3.14,1);#3.1,truncate截断,将n位后的数截断
+select mod(10,3);#1,mod取余,10%3=1,a-a/b*b
+```
 
+```mysql
+#日期函数
+select now();#now返回当前系统日期+时间
+select curdate();#curdate返回当前日期,不包含时间
+select curtime();#curtime返回当前时间,不包含日期
+select year(now());#year返回当前时间的年
+select month(now());#month返回月,day,hour,minute,second类似
+select monthname(now());#monthname返回英文
+select str_to_date('9-20-1999','%m-%d-%Y');#1999-09-13,字符转换为日期
+select date_format('1999/9/20','%Y %m %d');#1999 09 20,日期转换成字符
+```
+
+```mysql
+#其它函数
+select version();#查看版本号
+select database();#当前库
+select user();#当前用户
+```
+
+```mysql
+#流程控制函数
+select if(2>1,'yes','no');#yes,if函数类似三目运算符
+#case使用1
+case 要判断的字段或表达式
+when 常量1 then 语句1;
+when 常量2 then 语句2;
+...
+else 语句n;
+end;#类似switch case defaul
+#case使用2
+case
+when 条件1 then 语句1;
+when 条件2 then 语句2;
+...
+else 语句n;
+end;#类似多重if
+```
+
+**分组函数**
+
+功能:用作统计使用,又称为聚合函数或统计函数或组函数
+
+sum求和,avg平均值,max最大值,min最小值,count计算个数
+
+```mysql
+select sum(字段) from 表;#求和
+```
+
+参数支持哪些类型:
+
+* sum和avg一般处理数值型
+* max,min,count支持任何类型
+
+是否忽略null:
+
+* 以上分组函数都忽略null
+
+可以和distinct搭配去重
 
 # 联结表
 
@@ -355,8 +422,6 @@ select * from v1 where stuname like '张%';
 * 简化复杂的sql操作
 * 保护数据,提高安全性
 
-
-
 # 事务隔离
 
 `SQL`标准事务隔离级别包括:
@@ -379,5 +444,227 @@ rollback to 节点名;		#回滚到到节点名
 
 # 存储过程
 
+存储过程是:一组预先编译好得`SQL`语句得集合(类似于C中的函数)
 
+好处:
+
+* 提高代码得重用性,简化操作
+* 减少了编译次数并且减少了和数据库服务器得连接次数,提高了效率
+
+```mysql
+#创建语法
+create procedure 存储过程名(参数列表)
+begin
+	存储过程体(一组合法有效的SQL语句)
+end
+/*注意:
+1.参数列表有三部分
+参数模式  参数名  参数类型
+参数模式:
+in		:该参数可以作为输入,需要调用方传入值
+out		:该参数可以作为输出(返回值)
+inout	:该参数既可以作为输入,又可以作为输出(既需要传入值,又可以返回值)
+2.如果存储过程体仅仅只有一句话,begin end可以省略
+3.存储过程体中的每条SQL语句结尾要求必须加分号,存储过程中的结尾可以使用DELIMITER
+	语法:DELIMITER 结束标记
+*/
+```
+
+```mysql
+#调用语法
+call 存储过程名(实参列表);
+#1.空参列表
+delimiter $   #$为结束标记
+create procedure myp1()
+begin
+	insert into 表名(字段) value ('hello'),('world');
+end $
+call myp1()$ #调用存储过程以结束标记作结尾
+#2.in模式参数
+delimiter $
+create procedure myp2(in _username varchar(20),in _password varchar(20))
+begin
+	declare result int default 0;#声明变量并初始化
+	select count(*) int result   #变量赋值
+	from admin
+	where admin.username=_username
+	and admin.password=_password;
+	select if(result>0,'成功','失败');
+end $
+call myp2('leo','123')$
+#3.out模式
+create procedure myp3(in aname varchar(20),out bname varchar(20))
+begin
+	select 表1.name into bname
+	from 表1
+	inner join 表2 on 表1.id=表2.id
+	where 表1.name=aname;
+end $
+set @_name$
+call myp3('lihua',@_name)$
+select @_name$
+#4.inout模式
+create procedure myp4(inout a int,inout b int)
+begin
+	set a=a*2;
+	set b=b*2;
+end $
+set @_a=10$
+set @_b=20$
+call myp4(@_a,@_b)$
+select @_a,@_b$
+```
+
+```mysql
+#删除存储过程
+drop procedure 存储过程名;#一次只能删除一个存储过程
+#查看存储过程
+show create procedure 存储过程名;
+```
+
+# 函数
+
+函数与 存储过程类似
+
+区别:
+
+* 存储过程可以有0个返回,也可以有多个返回,适合做批量增删改
+* 函数必须有且只有1个返回,适合做处理数据返回一个结果
+
+```mysql
+#创建语法
+create function 函数名(参数列表) returns 返回类型
+begin
+	函数体
+end
+/*注意:
+1.参数列表包含两个部分:
+参数名 参数类型
+2.函数体:
+肯定有return语句
+3.函数体中只有一句话,可以省略begin end;
+4.用delimiter语句设置结束标记
+*/
+```
+
+```mysql
+#调用语法
+select 函数名(参数列表);
+#1.无参返回
+#返回员工数
+delimiter $
+create function myf1() returns int
+begin
+	declare c int default 0;#定义一个局部变量
+	select count(*) into c
+	from employees;
+	return c;
+end $
+select myf1()$
+#2.有参有返回
+#根据员工名返回他的工资
+create function myf2(_name varchar(20)) returns double
+begin
+	set @sal=0;#定义一个用户变量
+	select salary into @sal 
+	from employees
+	where name=_name;
+	return @sal;
+end $
+select myf2('tom')$
+```
+
+```mysql
+#查看函数
+show create function 函数名;
+#删除函数
+drop function 函数名;
+```
+
+# 流程控制结构
+
+顺序结构:程序从上往下依次执行
+
+分支结构:程序从两条或多条路径中选择一条去执行
+
+循环结构:程序在满足一定条件的基础上,重复执行一段代码
+
+```mysql
+#分支函数
+1.if函数能实现简单的双分支
+select if(表达式1,表达式2,表达式3);
+如果表达式1成立,则if函数返回表达式2的值,否则返回表达式3的值
+2.case结构
+#case使用1
+case 要判断的字段或表达式
+when 常量1 then 语句1;
+when 常量2 then 语句2;
+...
+else 语句n;
+end case;#类似switch case defaul
+#case使用2
+case
+when 条件1 then 语句1;
+when 条件2 then 语句2;
+...
+else 语句n;
+end case;#类似多重
+3.if结构实现多重分支
+if 条件1 then 语句1;
+elseif 条件2 then 语句2;
+...
+else 语句n;
+end if;#只能用在begin end中(函数和存储过程中)
+```
+
+```mysql
+#循环结构
+分类: while loop repeat
+循环控制:
+iterate 类似于continue 结束本次循环,继续下一次
+leave 类似于break 结束当前所在的循环
+循环控制必须使用标签
+1.while
+[标签:]while 循环条件 do
+	循环体;
+end while [标签];#类似while
+2.loop
+[标签:]loop
+	循环体;
+end loop [标签];#死循环
+3.repeat
+[标签:]repeat
+	循环体;
+until 结束循环的条件
+end repeat [标签];#类似do while
+```
+
+```mysql
+#1.批量插入,根据次数插入admin表中多条记录
+delimiter $
+create procedure pro_while(in insertcount int)
+begin
+	declare i int default 1;
+	while i<=insertcount do
+		insert into admin(username,`password`)
+		values(concat('tom',i),'123');
+		set i=i+1;
+	end while;
+end $
+call pro_while(10)$
+#2.如果次数大于5,则停止
+drop procedure pro_while$	#先删除再创建
+create procedure pro_while(in insertcount int)
+begin
+	declare i int default 1;
+	a:while i<=insertcount do
+		insert into admin(username,`password`)
+		values(concat('jack',i),'234');
+		if i>=5 then leave a;
+		end if;
+		set i=i+1;
+	end while a;
+end $
+call pro_while(10);
+```
 
