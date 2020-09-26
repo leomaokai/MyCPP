@@ -6,7 +6,7 @@ template <typename T>
 class SqList
 {
 public:
-    SqList(int size = 10)
+    SqList(int size = 20)
     {
         _first = new T[size];
         _last = _first;

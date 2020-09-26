@@ -1,254 +1,254 @@
-//#include<iostream>
-//#include<stack>
-//using namespace std;
-///*
-//Éî¶È±éÀúÃÔ¹¬Â·¾¶ËÑË÷   0¿É×ß 1²»¿É×ß
-//Ã¿¸ö½ÚµãÓĞ4¸ö·½Ïò,ÅĞ¶ÏË³ĞòÎª ÓÒ ÏÂ ×ó ÉÏ
-//
-//1.½«µÚÒ»¸ö0½ÚµãÈëÕ»,ÅĞ¶ÏÆä4¸ö·½ÏòÊÇ·ñ¿É×ß
-//2.µ±ÆäÖĞÒ»¸ö·½ÏòÅĞ¶Ï¿É×ßºó,Îª·ÀÖ¹ÖØ¸´ĞĞ×ß,½«ÕâÁ½¸ö½ÚµãÖ®¼ä¸ÄÎª²»¿É×ß
-//3.ÔÙ½«¿É×ß·½ÏòµÄ0½ÚµãÈëÕ»,³ÉÎªÕ»¶¥,ÅĞ¶ÏÆäËü3¸ö·½ÏòÊÇ·ñ¿É×ß
-//4.Èô´Ë½Úµã4¸ö·½Ïò¶¼²»¿É×ß,Ôò³öÕ»
-//5.´ËÊ±Õ»¶¥ÎªÉÏÒ»¸ö0½Úµã,²¢ÇÒÓĞÒ»¸ö»áËÀÂ·µÄ¿É×ß·½Ïò±»µÚ¶ş²½¸ÄÎª²»¿É×ß
-//6.ÖØĞÂÅĞ¶ÏÒ»¸ö¿É×ß·½Ïò
-//
-//0 0 0 1 1 1
-//1 1 0 0 0 1
-//1 1 0 0 1 1
-//1 1 0 0 0 1
-//1 1 0 1 0 1
-//1 1 0 0 0 0
-//Éî¶È±éÀú½á¹ûÂ·¾¶²»»áÊÇ×î¼ÑÂ·¾¶
-//* * * 1 1 1
-//1 1 * * 0 1
-//1 1 0 * 1 1
-//1 1 0 * * 1
-//1 1 0 1 * 1
-//1 1 0 0 * *
-//*/
-//
-//// ¶¨ÒåÃÔ¹¬Ã¿Ò»¸ö½ÚµãµÄËÄ¸ö·½Ïò
-//const int RIGHT = 0;
-//const int DOWN = 1;
-//const int LEFT = 2;
-//const int UP = 3;
-//
-//// ÃÔ¹¬Ã¿Ò»¸ö½Úµã·½ÏòµÄÊıÁ¿
-//const int WAY_NUM = 4;
-//
-//// ¶¨Òå½ÚµãĞĞ×ß×´Ì¬
-//const int YES = 4;
-//const int NO = 5;
-//
-//// ÃÔ¹¬
-//class Maze
-//{
-//public:
-//	// ³õÊ¼»¯ÃÔ¹¬£¬¸ù¾İÓÃ»§ÊäÈëµÄĞĞÁĞÊı£¬Éú³É´æ´¢ÃÔ¹¬Â·¾¶ĞÅÏ¢µÄ¶şÎ¬Êı×é
-//	Maze(int row, int col)
-//		:_row(row)
-//		, _col(col)
-//	{
-//			_pMaze = new Node * [_row];
-//		for (int i = 0; i < _row; ++i)
-//		{
-//			_pMaze[i] = new Node[_col];
-//		}
-//	}
-//
-//	// ³õÊ¼»¯ÃÔ¹¬Â·¾¶½ÚµãĞÅÏ¢
-//	void initNode(int x, int y, int val)
-//	{
-//		_pMaze[x][y]._x = x;
-//		_pMaze[x][y]._y = y;
-//		_pMaze[x][y]._val = val;
-//		// ½ÚµãËÄ¸ö·½ÏòÄ¬ÈÏµÄ³õÊ¼»¯,Ä¬ÈÏ²»¿É×ß
-//		for (int i = 0; i < WAY_NUM; ++i)
-//		{
-//			_pMaze[x][y]._state[i] = NO;
-//		}
-//	}
-//
-//	// ³õÊ¼»¯ÃÔ¹¬0½ÚµãËÄ¸ö·½ÏòµÄĞĞ×ß×´Ì¬ĞÅÏ¢
-//	void setNodeState()
-//	{
-//		for (int i = 0; i < _row; ++i)
-//		{
-//			for (int j = 0; j < _col; ++j)
-//			{
-//				if (_pMaze[i][j]._val == 1)
-//				{
-//					continue;
-//				}
-//				//ÏòÓÒÅĞ¶ÏÊ±,j²»¿ÉÒÔÊÇ×îºóÒ»ÁĞ,²»È»j+1»áÔ½½ç
-//				if (j < _col - 1 && _pMaze[i][j + 1]._val == 0)
-//				{
-//					_pMaze[i][j]._state[RIGHT] = YES;
-//				}
-//				//Í¬Àí,ÏòÏÂÅĞ¶ÏÊ±,i²»ÄÜÊÇ×îºóÒ»ĞĞ
-//				if (i < _row - 1 && _pMaze[i + 1][j]._val == 0)
-//				{
-//					_pMaze[i][j]._state[DOWN] = YES;
-//				}
-//
-//				if (j > 0 && _pMaze[i][j - 1]._val == 0)
-//				{
-//					_pMaze[i][j]._state[LEFT] = YES;
-//				}
-//
-//				if (i > 0 && _pMaze[i - 1][j]._val == 0)
-//				{
-//					_pMaze[i][j]._state[UP] = YES;
-//				}
-//			}
-//		}
-//	}
-//
-//	// Éî¶ÈËÑË÷ÃÔ¹¬Â·¾¶
-//	void searchMazePath()
-//	{
-//		//µÚÒ»¸ö½Úµã²»Îª0,ÔòÃÔ¹¬ÎŞÈë¿Ú
-//		if (_pMaze[0][0]._val == 1)
-//		{
-//			return;
-//		}
-//		//½«µÚÒ»¸ö0½ÚµãÈëÕ»
-//		_stack.push(_pMaze[0][0]);
-//		
-//		while (!_stack.empty())
-//		{
-//			//Ã¿´ÎÅĞ¶ÏÕ»¶¥½Úµã
-//			Node top = _stack.top();
-//			int x = top._x;
-//			int y = top._y;
-//
-//			// ÒÑ¾­ÕÒµ½ÓÒÏÂ½Ç³ö¿ÚµÃÃÔ¹¬Â·¾¶
-//			if (x == _row - 1 && y == _col - 1)
-//			{
-//				return;
-//			}
-//
-//			// ÍùÓÒ·½ÏòÑ°ÕÒ
-//			if (_pMaze[x][y]._state[RIGHT] == YES)
-//			{
-//				//ÎªÁË·ÀÖ¹Á½¸ö½ÚµãÖ®¼äÖØ¸´ÅĞ¶Ï(ĞĞ×ß),½«ËüÃÇÖ®¼ä¸ÄÎª²»¿É×ß
-//				_pMaze[x][y]._state[RIGHT] = NO;
-//				_pMaze[x][y + 1]._state[LEFT] = NO;
-//				//½«ÅĞ¶Ï¿É×ß·½ÏòµÄ½ÚµãÈëÕ»
-//				_stack.push(_pMaze[x][y + 1]);
-//				continue;
-//			}
-//
-//			// ÍùÏÂ·½ÏòÑ°ÕÒ
-//			if (_pMaze[x][y]._state[DOWN] == YES)
-//			{
-//				_pMaze[x][y]._state[DOWN] = NO;
-//				_pMaze[x + 1][y]._state[UP] = NO;
-//				_stack.push(_pMaze[x + 1][y]);
-//				continue;
-//			}
-//
-//			// Íù×ó·½ÏòÑ°ÕÒ
-//			if (_pMaze[x][y]._state[LEFT] == YES)
-//			{
-//				_pMaze[x][y]._state[LEFT] = NO;
-//				_pMaze[x][y - 1]._state[RIGHT] = NO;
-//				_stack.push(_pMaze[x][y - 1]);
-//				continue;
-//			}
-//
-//			// ÍùÉÏ·½ÏòÑ°ÕÒ
-//			if (_pMaze[x][y]._state[UP] == YES)
-//			{
-//				_pMaze[x][y]._state[UP] = NO;
-//				_pMaze[x - 1][y]._state[DOWN] = NO;
-//				_stack.push(_pMaze[x - 1][y]);
-//				continue;
-//			}
-//
-//			_stack.pop();
-//		}
-//	}
-//
-//	// ´òÓ¡ÃÔ¹¬Â·¾¶ËÑË÷½á¹û
-//	void showMazePath()
-//	{
-//		//´ËÊ±Õ»ÄÚµÄ½Úµã¾ÍÊÇÃÔ¹¬Â·¾¶
-//		if (_stack.empty())
-//		{
-//			cout << "²»´æÔÚÒ»ÌõÃÔ¹¬Â·¾¶£¡" << endl;
-//		}
-//		else
-//		{
-//			while (!_stack.empty())
-//			{
-//				Node top = _stack.top();
-//				_pMaze[top._x][top._y]._val = '*';
-//				_stack.pop();
-//			}
-//
-//			for (int i = 0; i < _row; ++i)
-//			{
-//				for (int j = 0; j < _col; ++j)
-//				{
-//					if (_pMaze[i][j]._val == '*')
-//					{
-//						cout << "* ";
-//					}
-//					else
-//					{
-//						cout << _pMaze[i][j]._val << " ";
-//					}
-//				}
-//				cout << endl;
-//			}
-//		}
-//	}
-//private:
-//	// ¶¨ÒåÃÔ¹¬½ÚµãÂ·¾¶ĞÅÏ¢
-//	struct Node
-//	{
-//		int _x;
-//		int _y;
-//		int _val; // ½ÚµãµÄÖµ
-//		int _state[WAY_NUM]; // ¼ÇÂ¼½ÚµãËÄ¸ö·½ÏòµÄ×´Ì¬
-//	};
-//
-//	Node** _pMaze; // ¶¯Ì¬Éú³ÉÃÔ¹¬Â·¾¶
-//	int _row;
-//	int _col;
-//	stack<Node> _stack; // Õ»½á¹¹£¬¸¨ÖúÉî¶ÈËÑË÷ÃÔ¹¬Â·¾¶
-//};
-//
-//int main()
-//{
-//	cout << "ÇëÊäÈëÃÔ¹¬µÄĞĞÁĞÊı(ÀıÈç£º10 10):";
-//	int row, col, data;
-//	cin >> row >> col;
-//
-//	Maze maze(row, col); // ´´½¨ÃÔ¹¬¶ÔÏó
-//
-//	cout << "ÇëÊäÈëÃÔ¹¬µÄÂ·¾¶ĞÅÏ¢(0±íÊ¾¿ÉÒÔ×ß£¬1±íÊ¾²»ÄÜ×ß):" << endl;
-//	for (int i = 0; i < row; ++i)
-//	{
-//		for (int j = 0; j < col; ++j)
-//		{
-//			cin >> data;
-//			// ¿ÉÒÔ³õÊ¼»¯ÃÔ¹¬½ÚµãµÄ»ù±¾ĞÅÏ¢
-//			maze.initNode(i, j, data);
-//		}
-//	}
-//
-//	// ¿ªÊ¼ÉèÖÃËùÓĞ½ÚµãµÄËÄ¸ö·½ÏòµÄ×´Ì¬
-//	maze.setNodeState();
-//
-//	// ¿ªÊ¼´Ó×óÉÏ½ÇËÑË÷ÃÔ¹¬µÄÂ·¾¶ĞÅÏ¢ÁË
-//	maze.searchMazePath();
-//
-//	cout << "--------------" << endl;
-//
-//	// ´òÓ¡ÃÔ¹¬Â·¾¶ËÑË÷µÄ½á¹û
-//	maze.showMazePath();
-//
-//	return 0;
-//}
+#include <iostream>
+#include <stack>
+using namespace std;
+/*
+æ·±åº¦éå†è¿·å®«è·¯å¾„æœç´¢   0å¯èµ° 1ä¸å¯èµ°
+æ¯ä¸ªèŠ‚ç‚¹æœ‰4ä¸ªæ–¹å‘,åˆ¤æ–­é¡ºåºä¸º å³ ä¸‹ å·¦ ä¸Š
+
+1.å°†ç¬¬ä¸€ä¸ª0èŠ‚ç‚¹å…¥æ ˆ,åˆ¤æ–­å…¶4ä¸ªæ–¹å‘æ˜¯å¦å¯èµ°
+2.å½“å…¶ä¸­ä¸€ä¸ªæ–¹å‘åˆ¤æ–­å¯èµ°å,ä¸ºé˜²æ­¢é‡å¤è¡Œèµ°,å°†è¿™ä¸¤ä¸ªèŠ‚ç‚¹ä¹‹é—´æ”¹ä¸ºä¸å¯èµ°
+3.å†å°†å¯èµ°æ–¹å‘çš„0èŠ‚ç‚¹å…¥æ ˆ,æˆä¸ºæ ˆé¡¶,åˆ¤æ–­å…¶å®ƒ3ä¸ªæ–¹å‘æ˜¯å¦å¯èµ°
+4.è‹¥æ­¤èŠ‚ç‚¹4ä¸ªæ–¹å‘éƒ½ä¸å¯èµ°,åˆ™å‡ºæ ˆ
+5.æ­¤æ—¶æ ˆé¡¶ä¸ºä¸Šä¸€ä¸ª0èŠ‚ç‚¹,å¹¶ä¸”æœ‰ä¸€ä¸ªä¼šæ­»è·¯çš„å¯èµ°æ–¹å‘è¢«ç¬¬äºŒæ­¥æ”¹ä¸ºä¸å¯èµ°
+6.é‡æ–°åˆ¤æ–­ä¸€ä¸ªå¯èµ°æ–¹å‘
+
+0 0 0 1 1 1
+1 1 0 0 0 1
+1 1 0 0 1 1
+1 1 0 0 0 1
+1 1 0 1 0 1
+1 1 0 0 0 0
+æ·±åº¦éå†ç»“æœè·¯å¾„ä¸ä¼šæ˜¯æœ€ä½³è·¯å¾„
+* * * 1 1 1
+1 1 * * 0 1
+1 1 0 * 1 1
+1 1 0 * * 1
+1 1 0 1 * 1
+1 1 0 0 * *
+*/
+
+// å®šä¹‰è¿·å®«æ¯ä¸€ä¸ªèŠ‚ç‚¹çš„å››ä¸ªæ–¹å‘
+const int right = 0;
+const int down = 1;
+const int left = 2;
+const int up = 3;
+
+// è¿·å®«æ¯ä¸€ä¸ªèŠ‚ç‚¹æ–¹å‘çš„æ•°é‡
+const int way_num = 4;
+
+// å®šä¹‰èŠ‚ç‚¹è¡Œèµ°çŠ¶æ€
+const int yes = 4;
+const int no = 5;
+
+// è¿·å®«
+class maze
+{
+public:
+	// åˆå§‹åŒ–è¿·å®«ï¼Œæ ¹æ®ç”¨æˆ·è¾“å…¥çš„è¡Œåˆ—æ•°ï¼Œç”Ÿæˆå­˜å‚¨è¿·å®«è·¯å¾„ä¿¡æ¯çš„äºŒç»´æ•°ç»„
+	maze(int row, int col)
+		: _row(row), _col(col)
+	{
+		_pmaze = new node *[_row];
+		for (int i = 0; i < _row; ++i)
+		{
+			_pmaze[i] = new node[_col];
+		}
+	}
+
+	// åˆå§‹åŒ–è¿·å®«è·¯å¾„èŠ‚ç‚¹ä¿¡æ¯
+	void initnode(int x, int y, int val)
+	{
+		_pmaze[x][y]._x = x;
+		_pmaze[x][y]._y = y;
+		_pmaze[x][y]._val = val;
+		// èŠ‚ç‚¹å››ä¸ªæ–¹å‘é»˜è®¤çš„åˆå§‹åŒ–,é»˜è®¤ä¸å¯èµ°
+		for (int i = 0; i < way_num; ++i)
+		{
+			_pmaze[x][y]._state[i] = no;
+		}
+	}
+
+	// åˆå§‹åŒ–è¿·å®«0èŠ‚ç‚¹å››ä¸ªæ–¹å‘çš„è¡Œèµ°çŠ¶æ€ä¿¡æ¯
+	void setnodestate()
+	{
+		for (int i = 0; i < _row; ++i)
+		{
+			for (int j = 0; j < _col; ++j)
+			{
+				if (_pmaze[i][j]._val == 1)
+				{
+					continue;
+				}
+				//å‘å³åˆ¤æ–­æ—¶,jä¸å¯ä»¥æ˜¯æœ€åä¸€åˆ—,ä¸ç„¶j+1ä¼šè¶Šç•Œ
+				if (j < _col - 1 && _pmaze[i][j + 1]._val == 0)
+				{
+					_pmaze[i][j]._state[right] = yes;
+				}
+				//åŒç†,å‘ä¸‹åˆ¤æ–­æ—¶,iä¸èƒ½æ˜¯æœ€åä¸€è¡Œ
+				if (i < _row - 1 && _pmaze[i + 1][j]._val == 0)
+				{
+					_pmaze[i][j]._state[down] = yes;
+				}
+
+				if (j > 0 && _pmaze[i][j - 1]._val == 0)
+				{
+					_pmaze[i][j]._state[left] = yes;
+				}
+
+				if (i > 0 && _pmaze[i - 1][j]._val == 0)
+				{
+					_pmaze[i][j]._state[up] = yes;
+				}
+			}
+		}
+	}
+
+	// æ·±åº¦æœç´¢è¿·å®«è·¯å¾„
+	void searchmazepath()
+	{
+		//ç¬¬ä¸€ä¸ªèŠ‚ç‚¹ä¸ä¸º0,åˆ™è¿·å®«æ— å…¥å£
+		if (_pmaze[0][0]._val == 1)
+		{
+			return;
+		}
+		//å°†ç¬¬ä¸€ä¸ª0èŠ‚ç‚¹å…¥æ ˆ
+		_stack.push(_pmaze[0][0]);
+
+		while (!_stack.empty())
+		{
+			//æ¯æ¬¡åˆ¤æ–­æ ˆé¡¶èŠ‚ç‚¹
+			node top = _stack.top();
+			int x = top._x;
+			int y = top._y;
+
+			// å·²ç»æ‰¾åˆ°å³ä¸‹è§’å‡ºå£å¾—è¿·å®«è·¯å¾„
+			if (x == _row - 1 && y == _col - 1)
+			{
+				return;
+			}
+
+			// å¾€å³æ–¹å‘å¯»æ‰¾
+			if (_pmaze[x][y]._state[right] == yes)
+			{
+				//ä¸ºäº†é˜²æ­¢ä¸¤ä¸ªèŠ‚ç‚¹ä¹‹é—´é‡å¤åˆ¤æ–­(è¡Œèµ°),å°†å®ƒä»¬ä¹‹é—´æ”¹ä¸ºä¸å¯èµ°
+				_pmaze[x][y]._state[right] = no;
+				_pmaze[x][y + 1]._state[left] = no;
+				//å°†åˆ¤æ–­å¯èµ°æ–¹å‘çš„èŠ‚ç‚¹å…¥æ ˆ
+				_stack.push(_pmaze[x][y + 1]);
+				continue;
+			}
+
+			// å¾€ä¸‹æ–¹å‘å¯»æ‰¾
+			if (_pmaze[x][y]._state[down] == yes)
+			{
+				_pmaze[x][y]._state[down] = no;
+				_pmaze[x + 1][y]._state[up] = no;
+				_stack.push(_pmaze[x + 1][y]);
+				continue;
+			}
+
+			// å¾€å·¦æ–¹å‘å¯»æ‰¾
+			if (_pmaze[x][y]._state[left] == yes)
+			{
+				_pmaze[x][y]._state[left] = no;
+				_pmaze[x][y - 1]._state[right] = no;
+				_stack.push(_pmaze[x][y - 1]);
+				continue;
+			}
+
+			// å¾€ä¸Šæ–¹å‘å¯»æ‰¾
+			if (_pmaze[x][y]._state[up] == yes)
+			{
+				_pmaze[x][y]._state[up] = no;
+				_pmaze[x - 1][y]._state[down] = no;
+				_stack.push(_pmaze[x - 1][y]);
+				continue;
+			}
+
+			_stack.pop();
+		}
+	}
+
+	// æ‰“å°è¿·å®«è·¯å¾„æœç´¢ç»“æœ
+	void showmazepath()
+	{
+		//æ­¤æ—¶æ ˆå†…çš„èŠ‚ç‚¹å°±æ˜¯è¿·å®«è·¯å¾„
+		if (_stack.empty())
+		{
+			cout << "ä¸å­˜åœ¨ä¸€æ¡è¿·å®«è·¯å¾„ï¼" << endl;
+		}
+		else
+		{
+			while (!_stack.empty())
+			{
+				node top = _stack.top();
+				_pmaze[top._x][top._y]._val = '*';
+				_stack.pop();
+			}
+
+			for (int i = 0; i < _row; ++i)
+			{
+				for (int j = 0; j < _col; ++j)
+				{
+					if (_pmaze[i][j]._val == '*')
+					{
+						cout << "* ";
+					}
+					else
+					{
+						cout << _pmaze[i][j]._val << " ";
+					}
+				}
+				cout << endl;
+			}
+		}
+	}
+
+private:
+	// å®šä¹‰è¿·å®«èŠ‚ç‚¹è·¯å¾„ä¿¡æ¯
+	struct node
+	{
+		int _x;
+		int _y;
+		int _val;			 // èŠ‚ç‚¹çš„å€¼
+		int _state[way_num]; // è®°å½•èŠ‚ç‚¹å››ä¸ªæ–¹å‘çš„çŠ¶æ€
+	};
+
+	node **_pmaze; // åŠ¨æ€ç”Ÿæˆè¿·å®«è·¯å¾„
+	int _row;
+	int _col;
+	stack<node> _stack; // æ ˆç»“æ„ï¼Œè¾…åŠ©æ·±åº¦æœç´¢è¿·å®«è·¯å¾„
+};
+
+int main()
+{
+	cout << "è¯·è¾“å…¥è¿·å®«çš„è¡Œåˆ—æ•°(ä¾‹å¦‚ï¼š10 10):";
+	int row, col, data;
+	cin >> row >> col;
+
+	maze maze(row, col); // åˆ›å»ºè¿·å®«å¯¹è±¡
+
+	cout << "è¯·è¾“å…¥è¿·å®«çš„è·¯å¾„ä¿¡æ¯(0è¡¨ç¤ºå¯ä»¥èµ°ï¼Œ1è¡¨ç¤ºä¸èƒ½èµ°):" << endl;
+	for (int i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < col; ++j)
+		{
+			cin >> data;
+			// å¯ä»¥åˆå§‹åŒ–è¿·å®«èŠ‚ç‚¹çš„åŸºæœ¬ä¿¡æ¯
+			maze.initnode(i, j, data);
+		}
+	}
+
+	// å¼€å§‹è®¾ç½®æ‰€æœ‰èŠ‚ç‚¹çš„å››ä¸ªæ–¹å‘çš„çŠ¶æ€
+	maze.setnodestate();
+
+	// å¼€å§‹ä»å·¦ä¸Šè§’æœç´¢è¿·å®«çš„è·¯å¾„ä¿¡æ¯äº†
+	maze.searchmazepath();
+
+	cout << "--------------" << endl;
+
+	// æ‰“å°è¿·å®«è·¯å¾„æœç´¢çš„ç»“æœ
+	maze.showmazepath();
+
+	return 0;
+}
