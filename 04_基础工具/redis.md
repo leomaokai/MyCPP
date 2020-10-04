@@ -2,7 +2,7 @@
 /etc/init.d/redis-server start
 /etc/init.d/redis-server restart
 
-访问redis			redis-cli
+访问redis			redis-cli     redis-cli -h ip -p passwd
 
 配置文件 `/etc/redis/redis.conf`
 
@@ -39,8 +39,6 @@ config get dir/* 	#实时传储收到的请求
 flushdb 			#删除当前选择数据库中的所有key
 flushall			#删除所有数据库中的数据库
 ```
-
-
 
 # value基本操作
 

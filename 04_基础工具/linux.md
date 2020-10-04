@@ -1,59 +1,111 @@
-pwd   显示当前路径
+# 常用的系统命令
 
-cd         切换路径  
-cd /       切到根路径
-cd ~       切换到主目录，root目录
-cd ..      上一级
-cd ../..   向上两级
+## 系统命令
 
-ls         列出目录内容（list缩写）
-ls -l      带l参数，显示文件属性
-ls -l filename  显示某个文件的文件属性
-ls *.txt    显示.txt结尾的文件
+```shell
+shutdown -h now		#立刻进行关机
+shutdown -r now		#重新启动
+reboot #重启
+su 用户 #切换用户
+su - #启动root
+sudo #以另一个用户身份执行命令
+passwd #修改用户密码
+logout #用户注销
+ps #查看当前进程
+ps -ef | grep test #查看test进程
+kill PID #杀死PID进程
+kill -9 PID #强行杀死进程
+```
+
+## 快捷命令
+
+``` shell
+chear #清屏
+ctrl l #清屏
+ctrl a #移动光标到行首
+ctrl e #移动光标到行尾
+ctrl f #光标后移一个字符,右箭头
+ctrl b #光标前移一个字符,左箭头
+ctrl d #删除光标位置的字符
+ctrl t #光标位置的字符于前面的字符交换
+ctrl k #剪切从光标位置到行尾的文本
+ctrl u #剪切从光标位置到行首的文本
+ctrl y #把剪切的文本粘贴到光标位置
+ctrl r #搜索历史命令
+ctrl p #移动到上一个历史命令,类似上箭头
+ctrl n #移动到下一个历史命令,类似下箭头
+history #显示历史命令
+```
+
+## 防火墙操作
+
+```shell
+#需要权限
+systemctl start firewalld #启动
+systemctl status firewalld #查看状态
+systemctl disable firewalld #停止
+systemctl stop firewalld #禁用
+firewall-cmd --version #查看版本
+firewall-cmd --state #显示状态
+firewall-cmd --list-all #查看打开的端口
+firewall-cmd --reload #更新防火墙规则
+firewall-cmd --add-port=80/tcp --permanent #开放端口(永久生效)
+firewall-cmd --query-port=80/tcp #查询端口是否打开
+firewall-cmd --remove-port=80/tcp --permanent #删除端口
+```
+
+# 文件命令
+
+## 文件操作
+
+```shell
+ls #展开当前目录下的可见文件
+ls a #展开当前目录下的所有文件
+ls l #展开当前目录下文件的详细信息
+ll a #展开当前目录下所有文件的详细信息
+pwd  #显示目前的目录
+mkdir dir #创建dir目录
+rmdir dir #删除dir空目录
+touch file #创建文件
+rm file	#带询问的删除
+rm -f file #直接删除
+rm -r dir #带询问的递归删除dir目录
+rm -rf dir #直接删除dir目录
+cp test1 test2 #复制test文件或目录到test2文件或目录
+cp -i test1 test2 #发生覆盖时需要确认
+cp -r dir1 dir2 #复制目录dir1中的内容到目录dir2
+mv test1 test2 #移动文件或目录,与cp类似,或修改名称
+tar -zcvf test.tar.gz /test/* #打包test目录文件
+tar -zxvf test.tar.gz #解压文件于当前目录
+tar -zxvf test.tar.gz -C /dir #解压文件于指定目录
+```
+
+## 查看文件
+
+```shell
+cat #由第一行开始显示文件内容
+more #可向后翻页的显示文件内容
+less #与more类似,但可以向前翻页
+#空格键:向下翻一页
+#enter:向下翻一行
+#ctrl p:向上翻一行
+#ctrl n:向下翻一行
+#q:退出
+```
 
 
-cat      显示文件内容
-cat -n  filename    带参数n，显示行号
 
-grep    查找文件的内容
-grep  ab  words   查找words文件中带ab的行
-grep  ab  words1 word2   查找2个文件中带ab的行
-egrep   带有更完整的正则匹配功能
-egrep "^a.*b$" words  匹配words文件中a开头b结尾的行
+## 权限操作
 
-find /home -name words   查找home文件下的words文件
+```shell
+#需要一定的权限才可权限操作
+chmod u=rwx,g=rw,o=r test #修改文件或目录的权限
+chmod 764 test #数字代表权限r=4 w=2 x=1
+chown 用户:文件 #修改文件或目录的所属用户
+chown 用户:组:文件 #修改文件或目录的所属用户
+```
 
-whereis python    查找程序位置
 
-touch  生成一个空文件
-mkdir  生成目录
-mkdir -p umts/baseband  带参数p 一级级往下创建目录
 
-mv  移动文件，也可以相当于重命名
-cp  复制文件
 
-rmdir  只能删除空目录
-rm  filename    删除文件，删除时需要确认是否删除
-rm -f filename  参数f，删除时不需要确认，只直接删除
-rm -r  xxx      参数r，递归删除xxx目录下的所有文件
-
-ls -l    查看文件属性
-
-total 16
--rwxr-xr-x 1 root root   74 Apr 12 18:00 hello
-drwxr-xr-x 2 root root 4096 Apr 12 23:13 umts
--rw-r--r-- 1 root root   36 Apr 12 16:09 words
--rw-r--r-- 1 root root   36 Apr 12 22:38 words2
-
-第1位文件类型：- 普通文件  d 目录 
-2-10,属主、属组、其他人的权限
-后面 连接数、属主、属组、文件大小（Byte）、最后修改日期
-
-chmod  改变文件权限
-chmod 用户组+/-权限
-用户组：属主（u）、属组（g）、其他（o）、所有人（a）
-权限： 读（r）、写（w）、执行（x）
-
-chmod u+x words  添加属主对words文件的执行权限
-chmod a-x words   删除所有人对words文件的执行权限
 
