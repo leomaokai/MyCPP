@@ -12,7 +12,7 @@
 
 ./nginx -s reload 重启
 
-
+[Nginx入门笔记](../09_进阶提高/Nginx/Nginx入门.md)
 
 ```
 主要配置参数

@@ -4,6 +4,10 @@ service mysql restart
 
 service mysql stop
 
+mysql -u root -p
+
+[MySQL入门笔记](../09_进阶提高/MySQL/MySQL入门.md)
+
 # 库管理
 
 创建数据库				  create database <数据库名>
@@ -25,7 +29,7 @@ service mysql stop
 
 # 表管理
 
-建表								create table <表名> ( <字段名> <类型> [,..<字段名n> <类型n>]);
+建表		create table <表名> ( <字段名> <类型> [,..<字段名n> <类型n>]);
 
 获取表结构					desc 表名或者show columns from 表名
 
@@ -43,15 +47,15 @@ service mysql stop
 
 # 表数据管理
 
-插入数据							insert into <表名>  [( <字段名>)]  values  ( 值 )
+插入数据				insert into <表名>  [( <字段名>)]  values  ( 值 )
 
-查询表中的数据				select <字段，字段，...> from < 表名 > where < 表达式 >
+查询表中的数据	select <字段，字段，...> from < 表名 > where < 表达式 >
 
-删除表中数据				   delete from 表名 where 表达式
+删除表中数据		delete from 表名 where 表达式
 
-修改表中数据 				  update 表名 set 字段=新值,…where 条件
+修改表中数据 		update 表名 set 字段=新值,…where 条件
 
-全部删除						  truncate table 表名 
+全部删除				truncate table 表名 
 
 # 表数据查询
 

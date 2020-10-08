@@ -1,10 +1,36 @@
-/etc/init.d/redis-server stop
-/etc/init.d/redis-server start
-/etc/init.d/redis-server restart
 
-访问redis			redis-cli     redis-cli -h ip -p passwd
+
+或在 /usr/bin	目录下
+
+访问redis		redis-cli     redis-cli -h ip -p passwd       redis-cli -p  port
 
 配置文件 `/etc/redis/redis.conf`
+
+```bash
+redis-server  /etc/redis/redis.conf  
+#开启服务(一个配置文件代表一个服务)
+redis-cli	#连接默认的6379服务
+redis-cli -p port -a password	#连接其它端口号服务
+```
+
+[Redis入门笔记](../09_进阶提高/Redis/Redis入门.md)
+
+# 服务器相关命令
+
+```bash
+config set requirepass 12345  #将密码设置为12345
+auth password		#验证密码
+ping PONG			#返回响应是否连接成功
+echo 				#在命令行打印一些内容
+select 0~15 		#打开编号的数据库
+quit/exit 			#退出客户端
+dbsize 				#返回当前数据库中所有key的数量
+info 				#返回redis的相关信息
+config get dir/* 	#实时传储收到的请求
+flushdb 			#删除当前选择数据库中的所有keybash
+flushall			#删除所有数据库中的数据库
+shutdown 			#退出服务
+```
 
 # key基本操作
 
@@ -26,19 +52,6 @@ ttl key
 persist key           #设置有时效性的key为持久key
 ```
 
-# 服务器相关命令
-
-```shell
-ping PONG			#返回响应是否连接成功
-echo 				#在命令行打印一些内容
-select 0~15 		#编号的数据库
-quit/exit 			#退出客户端
-dbsize 				#返回当前数据库中所有key的数量
-info 				#返回redis的相关信息
-config get dir/* 	#实时传储收到的请求
-flushdb 			#删除当前选择数据库中的所有key
-flushall			#删除所有数据库中的数据库
-```
 
 # value基本操作
 
