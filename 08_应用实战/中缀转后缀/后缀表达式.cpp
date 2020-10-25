@@ -12,13 +12,13 @@ using namespace std;
 void solution(string s)
 {
     stack<char> strstack;
-    int len = s.length();
+    int len=s.length();
     for (int i = 0; i < len; ++i)
     {
         char t = s[i];
-        if ((int)s[i] < 40 || (int)s[i] > 47) //非算术运算符直接输出
+        if (((int)s[i] < 40 || (int)s[i] > 47) && (int)s[i]!=94)//ACSII码方便判断
             cout << s[i] << " ";
-        else if (strstack.empty() || t == '(') //栈为空或字符为 ( 直接入栈
+        else if (strstack.empty() || t == '(' || t=='^') //栈为空或字符为 (  ^ 直接入栈
             strstack.push(t);
         //关键
         else
@@ -35,7 +35,7 @@ void solution(string s)
                 }
                 else if (t == '*' || t == '/')
                 {
-                    if (temp == '*' || temp == '/')
+                    if (temp == '*' || temp == '/' || temp == '^')
                     {
                         strstack.pop();
                         cout << temp << " ";

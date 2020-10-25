@@ -25,9 +25,10 @@ public:
         listnode<T> *p = _head->next;
         for (int i = 0; i < _size; ++i)
         {
+            listnode<T> *temp = p->next;
             if (p != nullptr)
                 delete p;
-            p = p->next;
+            p = temp;
         }
     }
     void push_back(const T &val) //尾插

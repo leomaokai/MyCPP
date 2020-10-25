@@ -2,6 +2,7 @@ string和char*的区别：
 
 * char * 是一个指针
 * string是一个类，内部封装了char*
+* const chat * 为常量字符串,在传参时必须用双引号引用
 
 构造函数原型
 
