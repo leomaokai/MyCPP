@@ -34,6 +34,16 @@ git revert <commit>		#撤销指定的提交
 
 ```bash
 git remote -v 				#查看远程版本库信息
+#SSH转HTTP
+git remote set-url origin https://github.com/leomaokai/KLIB.git
+#HTTP转SSH
+git remote set-url origin git@github.com:leomaokai/KLIB.git
+#删除http代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+#git设置全局http代理和https代理(错误)
+git config --global http.proxy 127.0.0.1:1080
+git config --global https.proxy 127.0.0.1:1080
 git remote show <remote>	#查看指定远程版本库信息
 git remote add <remote> <url> 	#添加远程版本库
 git fetch <remote> 				#从远程库获取代码
