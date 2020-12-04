@@ -207,6 +207,10 @@ windows浏览器访问tomcat过程
 * 需要`keepalived`软件
 * 需要虚拟`ip`
 
+## http+ssl
+
+https://blog.csdn.net/Jioho_chen/article/details/81516581
+
 # 原理解析
 
 master&worker机制

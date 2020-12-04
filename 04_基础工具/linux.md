@@ -105,7 +105,44 @@ chown 用户:文件 #修改文件或目录的所属用户
 chown 用户:组:文件 #修改文件或目录的所属用户
 ```
 
+# 软件安装
 
+```bash
+#更新gcc 9.3.1版本
+sudo yum install centos-release-scl
+sudo yum install devtoolset-9
+scl enable devtoolset-9 bash
+```
+
+```bash
+#安装boost
+yum install boost
+yum install boost-devel
+yum install boost-doc
+```
+
+# 用户操作
+
+```shell
+useradd [选项] 用户名  #添加用户
+选项含义如下：
+-d 目录 指定用户主目录，如果此目录不存在，则同时使用-m选项，可以创建主目录。
+-g 用户组 指定用户所属的用户组。
+用户名 指定新账号的登录名
+
+userdel 选项 用户名 #删除操作
+常用的选项是-r，它的作用是把用户的主目录一起删除
+
+passwd 选项 用户名 #修改用户密码
+可使用的选项：
+代码:
+-l 锁定口令，即禁用账号。
+-u 口令解锁。
+-d 使账号无口令。
+
+groupadd groupname #添加组
+groupdel groupname #删除组
+```
 
 
 

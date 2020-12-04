@@ -82,6 +82,6 @@ int main()
         cin >> e[i].u >> e[i].v >> e[i].w;
     sort(e, e + m, comp); //O(eloge)
     int ans = kruskal(n);
-    cout << "the cost: " << endl;
+    cout << "the cost: " << ans << endl;
     return 0;
 }

@@ -41,7 +41,7 @@ int main()
     cout << "input val" << endl;
     for (int i = 0; i < n; ++i)
         cin >> a[i];
-    mergesort(a, 0, n);
+    mergesort(a, 0, n-1);
     cout << "mergesort:" << endl;
     for (int i = 0; i < n; ++i)
         cout << a[i] << " ";
