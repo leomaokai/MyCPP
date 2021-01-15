@@ -45,6 +45,19 @@ DROP USER 用户;	--删除用户
 mysqldump -hlocalhost -uroot -p123456 库名 表名 > 位置
 ```
 
+```bash
+#win10 mysql_8
+
+#启动服务
+	#计算机管理 服务->MySQL
+#初始化密码
+mysqld --initialize --user=mysql --console
+
+#修改密码
+alter user 'root'@'localhost' identified with mysql_native_password by '123456';
+flush privileges;
+```
+
 # 事务
 
 ## 概念
